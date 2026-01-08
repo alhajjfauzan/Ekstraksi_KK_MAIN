@@ -2,17 +2,17 @@
 <html lang="id">
 <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/modal.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/modal.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/form.css')); ?>">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="dashboard-navbar">
         <div class="navbar-menu">
-            <a href="{{ route('landing') }}">Home</a>
-            <a href="{{ route('tambah') }}">Tambah Data (Manual)</a>
+            <a href="<?php echo e(route('landing')); ?>">Home</a>
+            <a href="<?php echo e(route('tambah')); ?>">Tambah Data (Manual)</a>
             <a href="/keluarga/upload">Upload Data (Otomatis)</a>
             <a href="#">Download Data</a>
         </div>
@@ -36,11 +36,11 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Jumlah KK</h3>
-                <div class="stat-number">{{ $jumlahKK ?? 0 }}</div>
+                <div class="stat-number"><?php echo e($jumlahKK ?? 0); ?></div>
             </div>
             <div class="stat-card">
                 <h3>Jumlah Warga</h3>
-                <div class="stat-number">{{ $jumlahWarga ?? 0 }}</div>
+                <div class="stat-number"><?php echo e($jumlahWarga ?? 0); ?></div>
             </div>
         </div>
 
@@ -66,18 +66,18 @@
                         </tr>
                     </thead>
                     <tbody id="table-body">
-                        @forelse($kartuKeluargas as $index => $kk)
+                        <?php $__empty_1 = true; $__currentLoopData = $kartuKeluargas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $kk): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
-                            <td>{{ $kartuKeluargas->firstItem() + $index }}</td>
-                            <td>{{ $kk->no_kk }}</td>
-                            <td>{{ $kk->kepala_keluarga }}</td>
-                            <td>{{ $kk->kecamatan }}</td>
-                            <td>{{ $kk->kabupaten }}</td>
+                            <td><?php echo e($kartuKeluargas->firstItem() + $index); ?></td>
+                            <td><?php echo e($kk->no_kk); ?></td>
+                            <td><?php echo e($kk->kepala_keluarga); ?></td>
+                            <td><?php echo e($kk->kecamatan); ?></td>
+                            <td><?php echo e($kk->kabupaten); ?></td>
                             <td>
-                                <a href="{{ route('keluarga.detail', $kk->no_kk) }}" class="btn-action" title="Lihat Detail">👁️</a>
+                                <a href="<?php echo e(route('keluarga.detail', $kk->no_kk)); ?>" class="btn-action" title="Lihat Detail">👁️</a>
                             </td>
                         </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="6">
                                 <div class="empty-state">
@@ -86,41 +86,41 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
 
         <!-- Pagination -->
-        @if($kartuKeluargas->hasPages())
+        <?php if($kartuKeluargas->hasPages()): ?>
         <div class="pagination-container">
             <!-- Previous Button -->
-            @if($kartuKeluargas->onFirstPage())
+            <?php if($kartuKeluargas->onFirstPage()): ?>
                 <button class="pagination-item" disabled>◀ Sebelumnya</button>
-            @else
-                <a href="{{ $kartuKeluargas->previousPageUrl() }}" class="pagination-item">◀ Sebelumnya</a>
-            @endif
+            <?php else: ?>
+                <a href="<?php echo e($kartuKeluargas->previousPageUrl()); ?>" class="pagination-item">◀ Sebelumnya</a>
+            <?php endif; ?>
 
             <!-- Page Numbers -->
             <div class="pagination-nav">
-                @foreach ($kartuKeluargas->getUrlRange(1, $kartuKeluargas->lastPage()) as $page => $url)
-                    @if ($page == $kartuKeluargas->currentPage())
-                        <button class="pagination-item active">{{ $page }}</button>
-                    @else
-                        <a href="{{ $url }}" class="pagination-item">{{ $page }}</a>
-                    @endif
-                @endforeach
+                <?php $__currentLoopData = $kartuKeluargas->getUrlRange(1, $kartuKeluargas->lastPage()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page => $url): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($page == $kartuKeluargas->currentPage()): ?>
+                        <button class="pagination-item active"><?php echo e($page); ?></button>
+                    <?php else: ?>
+                        <a href="<?php echo e($url); ?>" class="pagination-item"><?php echo e($page); ?></a>
+                    <?php endif; ?>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
             <!-- Next Button -->
-            @if($kartuKeluargas->hasMorePages())
-                <a href="{{ $kartuKeluargas->nextPageUrl() }}" class="pagination-item">Selanjutnya ▶</a>
-            @else
+            <?php if($kartuKeluargas->hasMorePages()): ?>
+                <a href="<?php echo e($kartuKeluargas->nextPageUrl()); ?>" class="pagination-item">Selanjutnya ▶</a>
+            <?php else: ?>
                 <button class="pagination-item" disabled>Selanjutnya ▶</button>
-            @endif
+            <?php endif; ?>
         </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     <!-- Success Modal -->
@@ -147,7 +147,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="<?php echo e(asset('js/script.js')); ?>"></script>
     <script>
         // Profile dropdown toggle
         function toggleProfileMenu() {
@@ -191,7 +191,7 @@
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '/logout';
-            form.innerHTML = `<input type="hidden" name="_token" value="{{ csrf_token() }}">`;
+            form.innerHTML = `<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">`;
             document.body.appendChild(form);
             form.submit();
         }
@@ -227,9 +227,9 @@
         }
 
         // Check if there's a success message from session
-        @if(session('success_message'))
-            showSuccessModal('{{ session('success_title', 'Berhasil!') }}', '{{ session('success_message') }}');
-        @endif
+        <?php if(session('success_message')): ?>
+            showSuccessModal('<?php echo e(session('success_title', 'Berhasil!')); ?>', '<?php echo e(session('success_message')); ?>');
+        <?php endif; ?>
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\Ekstraksi_KK_MAIN\resources\views/dashboard.blade.php ENDPATH**/ ?>

@@ -3,71 +3,275 @@
 <head>
     <title>Edit Data Keluarga</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/form_edit.css') }}">
 </head>
 <body>
-    <div class="container" style="padding-top: 30px;">
+    <div class="form-container">
+        <!-- Header -->
         <div class="form-header">
-            <a href="/dashboard" class="back-link">< Kembali</a>
-            <h2 class="text-green">EDIT DATA KELUARGA</h2>
+            <a href="/dashboard" class="back-link">◀ Kembali</a>
+            <h1 class="form-title">PENGISIAN DATA KELUARGA</h1>
         </div>
 
-        <form>
-            <div class="form-group">
-                <label>No Kartu Keluarga</label>
-                <input type="text" value="6402092839123">
+        <!-- Form -->
+        <form action="{{ route('kartu-keluarga.update', $kartuKeluarga->id) }}" method="POST" id="formKeluarga">
+            @csrf
+            @method('PUT')
+
+            <!-- Section: Data Kepala Keluarga -->
+            <div class="form-section">
+                <h2 class="section-title">Data Kepala Keluarga</h2>
+                
+                <div class="form-group">
+                    <label>No Kartu Keluarga</label>
+                    <input type="text" name="no_kk" placeholder="Isikan" value="{{ old('no_kk', $kartuKeluarga->no_kk) }}" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>RT</label>
+                        <input type="text" name="rt" placeholder="Isikan" value="{{ old('rt', $kartuKeluarga->rt) }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>RW</label>
+                        <input type="text" name="rw" placeholder="Isikan" value="{{ old('rw', $kartuKeluarga->rw) }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Desa/Kelurahan</label>
+                        <input type="text" name="kelurahan" placeholder="Isikan" value="{{ old('kelurahan', $kartuKeluarga->kelurahan) }}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kecamatan</label>
+                        <input type="text" name="kecamatan" placeholder="Isikan" value="{{ old('kecamatan', $kartuKeluarga->kecamatan) }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kabupaten/Kota</label>
+                        <input type="text" name="kabupaten" placeholder="Isikan" value="{{ old('kabupaten', $kartuKeluarga->kabupaten) }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Provinsi</label>
+                        <input type="text" name="provinsi" placeholder="Isikan" value="{{ old('provinsi', $kartuKeluarga->provinsi) }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tanggal Kartu Dikeluarkan</label>
+                    <input type="date" name="tanggal_dikeluarkan" value="{{ old('tanggal_dikeluarkan', $kartuKeluarga->tanggal_dikeluarkan) }}" required>
+                </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>RT</label>
-                    <input type="text" value="001">
-                </div>
-                <div class="form-group">
-                    <label>RW</label>
-                    <input type="text" value="005">
-                </div>
-                <div class="form-group">
-                    <label>Kode Pos</label>
-                    <input type="text" value="75511">
-                </div>
+            <!-- Section: Data Anggota Keluarga -->
+            <div id="members-container"></div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="button" class="btn-add-member" onclick="addMember()">
+                    + Tambah Anggota Keluarga
+                </button>
             </div>
-            
-            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
-                <button type="button" onclick="openModal('modal-ubah')" class="btn btn-warning" style="justify-content: center;">
-                    ✏️ Ubah Data
+
+            <div class="form-actions">
+                <button type="button" class="btn-confirm" onclick="showConfirmationModalEdit(event)">
+                    ✏️ Ubah
                 </button>
-                
-                <button type="button" onclick="openModal('modal-hapus')" class="btn btn-danger" style="justify-content: center;">
-                    🗑️ Hapus Data
+                <button type="button" class="btn-cancel" onclick="showDeleteConfirmationModal(event)" style="background-color: #d32f2f;">
+                    🗑️ Hapus
                 </button>
+                <a href="/dashboard" class="btn-cancel" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; background-color: #666;">
+                    Batal
+                </a>
             </div>
         </form>
     </div>
 
-    <div id="modal-ubah" class="modal-overlay">
-        <div class="modal-box">
-            <button class="close-btn" onclick="closeModal('modal-ubah')">X</button>
-            <h3>Peringatan!</h3>
-            <p style="margin: 20px 0; color: #ccc;">Apakah anda sudah yakin dengan data yang anda masukkan? Harap cek dengan seksama!</p>
-            <div class="modal-actions">
-                <button onclick="closeModal('modal-ubah')" class="btn btn-outline">Tidak</button>
-                <button class="btn btn-primary">Yakin</button>
+    <!-- Modal Konfirmasi Ubah -->
+    <div class="modal-confirmation" id="confirmationModalEdit">
+        <div class="modal-confirmation-content">
+            <h2 class="modal-confirmation-title">Peringatan!</h2>
+            <p class="modal-confirmation-message">
+                Apakah anda sudah yakin dengan data yang anda masukkan? Harap cek dengan seksama!
+            </p>
+            <div class="modal-confirmation-buttons">
+                <button type="button" class="btn-tidak" onclick="closeConfirmationModalEdit()">Tidak</button>
+                <button type="button" class="btn-yakin" onclick="confirmSubmitEdit()">Yakin</button>
             </div>
         </div>
     </div>
 
-    <div id="modal-hapus" class="modal-overlay">
-        <div class="modal-box">
-            <button class="close-btn" onclick="closeModal('modal-hapus')">X</button>
-            <h3>Peringatan!</h3>
-            <p style="margin: 20px 0; color: #ccc;">Apakah Anda Yakin ingin menghapus Data Keluarga ini?</p>
-            <div class="modal-actions">
-                <button onclick="closeModal('modal-hapus')" class="btn btn-outline">Tidak</button>
-                <button class="btn btn-danger">Hapus</button>
+    <!-- Modal Konfirmasi Hapus -->
+    <div class="modal-confirmation" id="confirmationModalDelete">
+        <div class="modal-confirmation-content">
+            <h2 class="modal-confirmation-title">Peringatan!</h2>
+            <p class="modal-confirmation-message">
+                Apakah Anda yakin ingin menghapus Data Keluarga ini? Data yang dihapus tidak dapat dikembalikan!
+            </p>
+            <div class="modal-confirmation-buttons">
+                <button type="button" class="btn-tidak" onclick="closeConfirmationModalDelete()">Tidak</button>
+                <button type="button" class="btn-yakin" onclick="confirmDelete()" style="background-color: #d32f2f;">Hapus</button>
             </div>
         </div>
     </div>
 
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('js/form.js') }}"></script>
+    <script>
+        let kartuKeluargaId = {{ $kartuKeluarga->id }};
+        let anggotaKeluargaData = @json($kartuKeluarga->anggotaKeluarga);
+
+        // Load existing family members on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (anggotaKeluargaData && anggotaKeluargaData.length > 0) {
+                anggotaKeluargaData.forEach((anggota, index) => {
+                    loadExistingMember(anggota, index);
+                });
+            }
+        });
+
+        function loadExistingMember(anggota, index) {
+            const membersContainer = document.getElementById('members-container');
+            const memberCard = document.createElement('div');
+            memberCard.className = 'member-card';
+            memberCard.id = 'member-' + index;
+            
+            memberCard.innerHTML = `
+                <div class="member-header">
+                    <h3 class="member-title">Anggota Keluarga ${index + 1}</h3>
+                    <button type="button" class="close-btn" onclick="removeMember(${index})">✕</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" name="members[${index}][nama_lengkap]" placeholder="Isikan" value="${anggota.nama_lengkap || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Induk Kependudukan</label>
+                        <input type="text" name="members[${index}][nik]" placeholder="Isikan" value="${anggota.nik || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <input type="text" name="members[${index}][jenis_kelamin]" placeholder="Isikan" value="${anggota.jenis_kelamin || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tempat Lahir</label>
+                        <input type="text" name="members[${index}][tempat_lahir]" placeholder="Isikan" value="${anggota.tempat_lahir || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input type="date" name="members[${index}][tanggal_lahir]" value="${anggota.tanggal_lahir || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Agama</label>
+                        <input type="text" name="members[${index}][agama]" placeholder="Isikan" value="${anggota.agama || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Pendidikan</label>
+                        <input type="text" name="members[${index}][pendidikan]" placeholder="Isikan" value="${anggota.pendidikan || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Pekerjaan</label>
+                        <input type="text" name="members[${index}][jenis_pekerjaan]" placeholder="Isikan" value="${anggota.jenis_pekerjaan || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Golongan Darah</label>
+                        <input type="text" name="members[${index}][golongan_darah]" placeholder="Isikan" value="${anggota.golongan_darah || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status Perkawinan</label>
+                        <input type="text" name="members[${index}][status_perkawinan]" placeholder="Isikan" value="${anggota.status_perkawinan || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Perkawinan</label>
+                        <input type="date" name="members[${index}][tanggal_perkawinan]" value="${anggota.tanggal_perkawinan || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status Hubungan Dalam Keluarga</label>
+                        <input type="text" name="members[${index}][status_hubungan]" placeholder="Isikan" value="${anggota.status_hubungan || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kewarganegaraan</label>
+                        <input type="text" name="members[${index}][kewarganegaraan]" placeholder="Isikan" value="${anggota.kewarganegaraan || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>No. pasport</label>
+                        <input type="text" name="members[${index}][no_pasport]" placeholder="Isikan" value="${anggota.no_pasport || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>No. KITAP</label>
+                        <input type="text" name="members[${index}][no_kitap]" placeholder="Isikan" value="${anggota.no_kitap || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Ayah</label>
+                        <input type="text" name="members[${index}][nama_ayah]" placeholder="Isikan" value="${anggota.nama_ayah || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Ibu</label>
+                        <input type="text" name="members[${index}][nama_ibu]" placeholder="Isikan" value="${anggota.nama_ibu || ''}" required>
+                    </div>
+                </div>
+            `;
+            
+            membersContainer.appendChild(memberCard);
+        }
+
+        function showConfirmationModalEdit(e) {
+            e.preventDefault();
+            document.getElementById('confirmationModalEdit').style.display = 'flex';
+        }
+
+        function closeConfirmationModalEdit() {
+            document.getElementById('confirmationModalEdit').style.display = 'none';
+        }
+
+        function confirmSubmitEdit() {
+            closeConfirmationModalEdit();
+            document.getElementById('formKeluarga').submit();
+        }
+
+        function showDeleteConfirmationModal(e) {
+            e.preventDefault();
+            document.getElementById('confirmationModalDelete').style.display = 'flex';
+        }
+
+        function closeConfirmationModalDelete() {
+            document.getElementById('confirmationModalDelete').style.display = 'none';
+        }
+
+        function confirmDelete() {
+            closeConfirmationModalDelete();
+            // Create a hidden form for DELETE request
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'POST';
+            deleteForm.action = `/kartu-keluarga/${kartuKeluargaId}`;
+            deleteForm.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+
+        // Override removeMember to handle existing members
+        function removeMember(index) {
+            const memberCard = document.getElementById('member-' + index);
+            if (memberCard) {
+                memberCard.remove();
+            }
+        }
+
+        // Override addMember to continue from existing members count
+        let memberCount = anggotaKeluargaData ? anggotaKeluargaData.length : 0;
+    </script>
 </body>
 </html>

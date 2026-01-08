@@ -16,6 +16,10 @@ class AuthController extends Controller
         ]);
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            
+            // Set session flash untuk modal
+            session()->flash('success_title', 'Berhasil!');
+            session()->flash('success_message', 'Anda telah berhasil melakukan Login');
 
             return redirect()->intended('/dashboard');
         }
@@ -24,12 +28,25 @@ class AuthController extends Controller
             'email' => 'Email atau password salah',
         ])->withInput();
     }
-     public function register(Request $request)
+
+    public function register(Request $request)
     {
+        // Validasi dengan rule password yang lebih ketat
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                'regex:/[A-Z]/', // Minimal 1 huruf besar
+            ],
+            'password_confirmation' => 'required|same:password',
+        ], [
+            'password.min' => 'Password minimal harus 8 karakter',
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar (A-Z)',
+            'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'password_confirmation.same' => 'Konfirmasi password tidak cocok dengan password',
         ]);
 
         $user = User::create([
@@ -39,6 +56,19 @@ class AuthController extends Controller
         ]);
         Auth::login($user);
 
+        // Set session flash untuk modal
+        session()->flash('success_title', 'Berhasil!');
+        session()->flash('success_message', 'Anda telah berhasil melakukan Register');
+
         return redirect('/dashboard');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('message', 'Anda telah berhasil logout');
     }
 }

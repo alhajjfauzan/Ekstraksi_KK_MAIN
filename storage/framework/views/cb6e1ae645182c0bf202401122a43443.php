@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ekstraksi Kartu Keluarga - Digitalisasi Data KK dengan Mudah</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/landing.css')); ?>">
 </head>
 <body>
     <!-- Hero Section -->
@@ -131,6 +131,6 @@
         </div>
     </footer>
 
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="<?php echo e(asset('js/script.js')); ?>"></script>
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\Ekstraksi_KK_MAIN\resources\views/landing.blade.php ENDPATH**/ ?>

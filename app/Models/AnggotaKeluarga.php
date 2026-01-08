@@ -17,6 +17,19 @@ class AnggotaKeluarga extends Model
         'jenis_kelamin',
         'status_hubungan',
         'no_kk_id',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'agama',
+        'pendidikan',
+        'pekerjaan',
+        'golongan_darah',
+        'status_perkawinan',
+        'kewarganegaraan',
+        'nama_ayah',
+        'nama_ibu',
+        'tanggal_perkawinan',
+        'no_pasport',
+        'no_kitap',
     ];
 
     // Relasi balik ke KartuKeluarga

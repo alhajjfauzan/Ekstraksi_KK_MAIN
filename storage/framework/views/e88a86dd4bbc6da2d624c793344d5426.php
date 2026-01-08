@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Ekstraksi KK</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/modal.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/modal.css')); ?>">
 </head>
 <body
-    @if(session('success_message'))
-        data-success="{{ session('success_message') }}"
-        data-success-title="{{ session('success_title') }}"
+    <?php if(session('success_message')): ?>
+        data-success="<?php echo e(session('success_message')); ?>"
+        data-success-title="<?php echo e(session('success_title')); ?>"
         data-redirect-url="/dashboard"
-    @endif
+    <?php endif; ?>
 >
 
     <div class="auth-wrapper">
@@ -20,20 +20,20 @@
             <h1 class="auth-title">LOGIN</h1>
             <p class="auth-subtitle">Masuk untuk mengelola data Kartu Keluarga</p>
 
-            @if ($errors->any())
+            <?php if($errors->any()): ?>
                 <div style="background-color: rgba(211, 47, 47, 0.1); border: 1px solid #d32f2f; color: #ff6b6b; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
-                    @foreach ($errors->all() as $error)
-                        <div>• {{ $error }}</div>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div>• <?php echo e($error); ?></div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            <form action="{{ route('login') }}" method="POST">
-                @csrf   
+            <form action="<?php echo e(route('login')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
 
                 <div class="form-group" style="text-align: left;">
                     <label>Email Address</label>
-                    <input type="email" name="email" placeholder="contoh@email.com" value="{{ old('email') }}" required>
+                    <input type="email" name="email" placeholder="contoh@email.com" value="<?php echo e(old('email')); ?>" required>
                 </div>
 
                 <div class="form-group" style="text-align: left;">
@@ -47,7 +47,7 @@
             </form>
 
             <div class="auth-footer">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar disini</a>
+                Belum punya akun? <a href="<?php echo e(route('register')); ?>">Daftar disini</a>
             </div>
         </div>
     </div>
@@ -63,6 +63,6 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/modal.js') }}"></script>
+    <script src="<?php echo e(asset('js/modal.js')); ?>"></script>
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\Ekstraksi_KK_MAIN\resources\views/auth/login.blade.php ENDPATH**/ ?>

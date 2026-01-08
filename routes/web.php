@@ -23,6 +23,8 @@ Route::get('/register', function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 // Dashboard - Update untuk menggunakan controller
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
