@@ -6,21 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataKelahiran extends Model
 {
-    protected $table = 'data_kelahiran';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    protected $keyType = 'int';
-
+    protected $table = 'data_kelahirans';
     protected $fillable = [
         'nik_fk',
         'tempat_lahir',
         'tanggal_lahir',
-        'jenis_kelamin',
+        'nama_ayah',
+        'nama_ibu'
     ];
 
     public $timestamps = true;
-
-    // Relasi ke AnggotaKeluarga
     public function anggotaKeluarga()
     {
         return $this->belongsTo(AnggotaKeluarga::class, 'nik_fk', 'nik');

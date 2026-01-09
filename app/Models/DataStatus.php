@@ -6,23 +6,42 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataStatus extends Model
 {
-    protected $table = 'data_status';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    protected $keyType = 'int';
+    protected $table = 'data_statuses';
 
     protected $fillable = [
         'nik_fk',
+        'pekerjaan',
+        'golongan_darah',
         'status_perkawinan',
-        'tanggal_perkawinan',
-        'status_hubungan_dalam_keluarga',
+        'kewarganegaraan',
+        'agama_id',
+        'pendidikan_id',
     ];
 
-    public $timestamps = true;
-
-    // Relasi ke AnggotaKeluarga
     public function anggotaKeluarga()
     {
-        return $this->belongsTo(AnggotaKeluarga::class, 'nik_fk', 'nik');
+        return $this->belongsTo(
+            AnggotaKeluarga::class,
+            'nik_fk',
+            'nik'
+        );
+    }
+
+    public function agama()
+    {
+        return $this->belongsTo(
+            Agama::class,
+            'agama_id',
+            'id'
+        );
+    }
+
+    public function pendidikan()
+    {
+        return $this->belongsTo(
+            Pendidikan::class,
+            'pendidikan_id',
+            'id'
+        );
     }
 }

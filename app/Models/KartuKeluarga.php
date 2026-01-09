@@ -6,27 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class KartuKeluarga extends Model
 {
-    protected $table = 'kartu_keluarga';
+    protected $table = 'kartu_keluargas';
+
     protected $primaryKey = 'no_kk';
-    public $incrementing = false;
     protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $fillable = [
         'no_kk',
         'kepala_keluarga',
+        'alamat',
+        'rt',
+        'rw',
         'kelurahan',
         'kecamatan',
         'kabupaten',
         'provinsi',
-        'alamat',
         'kode_pos',
-        'rt',
-        'rw',
+        'tanggal_dikeluarkan'
     ];
 
-    // Relasi ke anggota keluarga
-    public function anggotaKeluarga()
-    {
-        return $this->hasMany(AnggotaKeluarga::class, 'no_kk_id', 'no_kk');
-    }
+    public $timestamps = false;
+    public function anggota()
+{
+    return $this->hasMany(
+        AnggotaKeluarga::class,
+        'kartu_keluarga_id', 
+        'no_kk'               
+    );
+}
+
 }

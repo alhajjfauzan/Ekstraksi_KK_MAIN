@@ -42,10 +42,18 @@ Route::get('/keluarga/upload/preview', function () {
     return view('upload');
 })->name('keluarga.preview');
 
-// Halaman Edit (Manual 2) - Mengambil ID
-Route::get('/keluarga/{id}/edit', function ($id) {
-    return view('keluarga.edit', ['id' => $id]);
-})->name('keluarga.edit');
+// Route::get('/keluarga/{id}/edit', function ($id) {
+//     return view('keluarga.edit', ['id' => $id]);
+// })->name('keluarga.edit');
+
+Route::get('/kartu-keluarga/{no_kk}/edit', [KartuKeluargaController::class, 'edit'])->name('keluarga.detail');
+
+// Update KK
+Route::put('/kartu-keluarga/{no_kk}', [KartuKeluargaController::class, 'update'])->name('kartu-keluarga.update');
+
+// Delete KK
+Route::delete('/kartu-keluarga/{no_kk}', [KartuKeluargaController::class, 'destroy'])->name('kartu-keluarga.destroy');
+
 
 // Tambahkan route untuk detail keluarga (baru, sesuai saran sebelumnya)
 Route::get('/keluarga/{no_kk}', [KartuKeluargaController::class, 'show'])->name('keluarga.detail');

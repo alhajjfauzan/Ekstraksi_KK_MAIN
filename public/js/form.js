@@ -15,15 +15,15 @@ function addMember() {
         <div class="form-row">
             <div class="form-group">
                 <label>Nama Lengkap</label>
-                <input type="text" name="members[${memberCount}][nama_lengkap]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][nama_lengkap]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>Nomor Induk Kependudukan</label>
-                <input type="text" name="members[${memberCount}][nik]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][nik]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>Jenis Kelamin</label>
-                <select name="members[${memberCount}][jenis_kelamin]" required>
+                <select name="anggota[${memberCount}][jenis_kelamin]" required>
                     <option value="">Pilih Jenis Kelamin</option>
                     <option value="Laki-laki">Laki-laki</option>
                     <option value="Perempuan">Perempuan</option>
@@ -34,15 +34,15 @@ function addMember() {
         <div class="form-row">
             <div class="form-group">
                 <label>Tempat Lahir</label>
-                <input type="text" name="members[${memberCount}][tempat_lahir]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][tempat_lahir]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>Tanggal Lahir</label>
-                <input type="date" name="members[${memberCount}][tanggal_lahir]" required>
+                <input type="date" name="anggota[${memberCount}][tanggal_lahir]" required>
             </div>
             <div class="form-group">
                 <label>Agama</label>
-                <select name="members[${memberCount}][agama]" required>
+                <select name="anggota[${memberCount}][agama]" required>
                     <option value="">Pilih Agama</option>
                     <option value="Islam">Islam</option>
                     <option value="Kristen">Kristen</option>
@@ -57,15 +57,15 @@ function addMember() {
         <div class="form-row">
             <div class="form-group">
                 <label>Pendidikan</label>
-                <input type="text" name="members[${memberCount}][pendidikan]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][pendidikan]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>Jenis Pekerjaan</label>
-                <input type="text" name="members[${memberCount}][pekerjaan]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][pekerjaan]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>Golongan Darah</label>
-                <select name="members[${memberCount}][golongan_darah]" required>
+                <select name="anggota[${memberCount}][golongan_darah]" required>
                     <option value="">Pilih Golongan Darah</option>
                     <option value="A">A</option>
                     <option value="B">B</option>
@@ -78,7 +78,7 @@ function addMember() {
         <div class="form-row">
             <div class="form-group">
                 <label>Status Perkawinan</label>
-                <select name="members[${memberCount}][status_perkawinan]" required>
+                <select name="anggota[${memberCount}][status_perkawinan]" required>
                     <option value="">Pilih Status</option>
                     <option value="Belum Kawin">Belum Kawin</option>
                     <option value="Kawin">Kawin</option>
@@ -88,11 +88,11 @@ function addMember() {
             </div>
             <div class="form-group">
                 <label>Tanggal Perkawinan</label>
-                <input type="date" name="members[${memberCount}][tanggal_perkawinan]">
+                <input type="date" name="anggota[${memberCount}][tanggal_perkawinan]">
             </div>
             <div class="form-group">
                 <label>Status Hubungan Dalam Keluarga</label>
-                <select name="members[${memberCount}][status_hubungan]" required>
+                <select name="anggota[${memberCount}][status_hubungan]" required>
                     <option value="">Pilih Status</option>
                     <option value="Kepala Keluarga">Kepala Keluarga</option>
                     <option value="Istri">Istri</option>
@@ -111,26 +111,26 @@ function addMember() {
         <div class="form-row">
             <div class="form-group">
                 <label>Kewarganegaraan</label>
-                <input type="text" name="members[${memberCount}][kewarganegaraan]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][kewarganegaraan]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>No. Pasport</label>
-                <input type="text" name="members[${memberCount}][no_pasport]" placeholder="Isikan">
+                <input type="text" name="anggota[${memberCount}][no_pasport]" placeholder="Isikan">
             </div>
             <div class="form-group">
                 <label>No. KITAP</label>
-                <input type="text" name="members[${memberCount}][no_kitap]" placeholder="Isikan">
+                <input type="text" name="anggota[${memberCount}][no_kitap]" placeholder="Isikan">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label>Nama Ayah</label>
-                <input type="text" name="members[${memberCount}][nama_ayah]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][nama_ayah]" placeholder="Isikan" required>
             </div>
             <div class="form-group">
                 <label>Nama Ibu</label>
-                <input type="text" name="members[${memberCount}][nama_ibu]" placeholder="Isikan" required>
+                <input type="text" name="anggota[${memberCount}][nama_ibu]" placeholder="Isikan" required>
             </div>
         </div>
     </div>
@@ -138,6 +138,8 @@ function addMember() {
     
     document.getElementById('members-container').insertAdjacentHTML('beforeend', memberHTML);
 }
+
+
 
 function removeMember(memberId) {
     const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
@@ -162,12 +164,21 @@ function closeConfirmationModal() {
 }
 
 function confirmSubmit() {
-    closeConfirmationModal();
-    const form = document.getElementById('formKeluarga');
-    if (form) {
-        form.submit();
+    const noKKInput = document.getElementById('no_kk');
+    const noKKError = document.getElementById('no_kk_error');
+
+    if (!/^\d+$/.test(noKKInput.value)) {
+        noKKError.style.display = 'block';
+        noKKInput.focus();
+        return; // hentikan submit
+    } else {
+        noKKError.style.display = 'none';
     }
+
+    const form = document.getElementById('formKeluarga');
+    if (form) form.submit();
 }
+
 
 // Close modal when clicking outside
 document.addEventListener('DOMContentLoaded', function() {

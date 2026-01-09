@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <title>Edit Data Keluarga</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/form_edit.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/form_edit.css')); ?>">
 </head>
 <body>
     <div class="form-container">
@@ -14,9 +14,9 @@
         </div>
 
         <!-- Form -->
-        <form action="{{ route('kartu-keluarga.update', $kartuKeluarga->no_kk) }}" method="POST" id="formKeluarga">
-            @csrf
-            @method('PUT')
+        <form action="<?php echo e(route('kartu-keluarga.update', $kartuKeluarga->no_kk)); ?>" method="POST" id="formKeluarga">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
 
             <!-- Section: Data Kepala Keluarga -->
             <div class="form-section">
@@ -24,42 +24,42 @@
                 
                 <div class="form-group">
                     <label>No Kartu Keluarga</label>
-                    <input type="text" name="no_kk" placeholder="Isikan" value="{{ old('no_kk', $kartuKeluarga->no_kk) }}" required>
+                    <input type="text" name="no_kk" placeholder="Isikan" value="<?php echo e(old('no_kk', $kartuKeluarga->no_kk)); ?>" required>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>RT</label>
-                        <input type="text" name="rt" placeholder="Isikan" value="{{ old('rt', $kartuKeluarga->rt) }}" required>
+                        <input type="text" name="rt" placeholder="Isikan" value="<?php echo e(old('rt', $kartuKeluarga->rt)); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>RW</label>
-                        <input type="text" name="rw" placeholder="Isikan" value="{{ old('rw', $kartuKeluarga->rw) }}" required>
+                        <input type="text" name="rw" placeholder="Isikan" value="<?php echo e(old('rw', $kartuKeluarga->rw)); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Desa/Kelurahan</label>
-                        <input type="text" name="kelurahan" placeholder="Isikan" value="{{ old('kelurahan', $kartuKeluarga->kelurahan) }}" required>
+                        <input type="text" name="kelurahan" placeholder="Isikan" value="<?php echo e(old('kelurahan', $kartuKeluarga->kelurahan)); ?>" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Kecamatan</label>
-                        <input type="text" name="kecamatan" placeholder="Isikan" value="{{ old('kecamatan', $kartuKeluarga->kecamatan) }}" required>
+                        <input type="text" name="kecamatan" placeholder="Isikan" value="<?php echo e(old('kecamatan', $kartuKeluarga->kecamatan)); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Kabupaten/Kota</label>
-                        <input type="text" name="kabupaten" placeholder="Isikan" value="{{ old('kabupaten', $kartuKeluarga->kabupaten) }}" required>
+                        <input type="text" name="kabupaten" placeholder="Isikan" value="<?php echo e(old('kabupaten', $kartuKeluarga->kabupaten)); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Provinsi</label>
-                        <input type="text" name="provinsi" placeholder="Isikan" value="{{ old('provinsi', $kartuKeluarga->provinsi) }}" required>
+                        <input type="text" name="provinsi" placeholder="Isikan" value="<?php echo e(old('provinsi', $kartuKeluarga->provinsi)); ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Tanggal Kartu Dikeluarkan</label>
-                    <input type="date" name="tanggal_dikeluarkan" value="{{ old('tanggal_dikeluarkan', $kartuKeluarga->tanggal_dikeluarkan) }}" required>
+                    <input type="date" name="tanggal_dikeluarkan" value="<?php echo e(old('tanggal_dikeluarkan', $kartuKeluarga->tanggal_dikeluarkan)); ?>" required>
                 </div>
             </div>
             <div id="members-container"></div>
@@ -109,10 +109,10 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/form.js') }}"></script>
+    <script src="<?php echo e(asset('js/form.js')); ?>"></script>
     <script>
-        let kartuKeluargaId = {{ $kartuKeluarga->no_kk }};
-        let anggotaKeluargaData = @json($kartuKeluarga->anggota);
+        let kartuKeluargaId = <?php echo e($kartuKeluarga->no_kk); ?>;
+        let anggotaKeluargaData = <?php echo json_encode($kartuKeluarga->anggota, 15, 512) ?>;
         document.addEventListener('DOMContentLoaded', function() {
             if (anggotaKeluargaData && anggotaKeluargaData.length > 0) {
                 anggotaKeluargaData.forEach((anggota, index) => {
@@ -247,8 +247,8 @@
             deleteForm.method = 'POST';
             deleteForm.action = `/kartu-keluarga/${kartuKeluargaId}`;
             deleteForm.innerHTML = `
-                @csrf
-                @method('DELETE')
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('DELETE'); ?>
             `;
             document.body.appendChild(deleteForm);
             deleteForm.submit();
@@ -266,4 +266,4 @@
         let memberCount = anggotaKeluargaData ? anggotaKeluargaData.length : 0;
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\Users\LENOVO\Documents\GitHub\projek\Ekstraksi_KK_MAIN\resources\views/keluarga/edit.blade.php ENDPATH**/ ?>

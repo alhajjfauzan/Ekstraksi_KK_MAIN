@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $jumlahWarga = AnggotaKeluarga::count();
 
         // Data KK + hitung anggota (opsional, tapi bagus)
-        $kartuKeluargas = KartuKeluarga::withCount('anggotaKeluarga')
+        $kartuKeluargas = KartuKeluarga::withCount('anggota')
             ->orderBy('no_kk', 'asc')
             ->paginate(10);
 
