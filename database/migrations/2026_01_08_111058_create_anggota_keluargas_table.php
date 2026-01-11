@@ -10,12 +10,13 @@ class CreateAnggotaKeluargasTable extends Migration
     {
         Schema::create('anggota_keluargas', function (Blueprint $table) {
             $table->string('nik', 16)->primary(); 
-
             $table->string('nama_lengkap', 255);
+            $table->date('tanggal_perkawinan')->nullable();
             $table->enum('jenis_kelamin', ['LAKI-LAKI', 'PEREMPUAN']);
             $table->enum('status_hubungan', [
                 'KEPALA KELUARGA',
                 'ISTERI',
+                'ISTRI',
                 'ANAK',
                 'MENANTU',
                 'CUCU',

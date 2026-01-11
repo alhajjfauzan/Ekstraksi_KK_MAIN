@@ -12,16 +12,12 @@
             <h1 class="form-title">PENGISIAN DATA KELUARGA</h1>
         </div>
         <form action="{{ route('tambah.store') }}" method="POST" id="formKeluarga">
-    @csrf
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+               @csrf
+        <script>
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+</script>
+
+
     <div class="form-section">
         <h2 class="section-title">Data Kepala Keluarga</h2>
         
@@ -35,14 +31,17 @@
             <div class="form-group">
                 <label>RT</label>
                 <input type="text" name="rt" placeholder="Isikan" value="{{ old('rt') }}" required>
+                <div class="input-error" style="color:red; display:none;">RT harus diisi.</div>
             </div>
             <div class="form-group">
                 <label>RW</label>
                 <input type="text" name="rw" placeholder="Isikan" value="{{ old('rw') }}" required>
+                <div class="input-error" style="color:red; display:none;">RW harus diisi.</div>
             </div>
             <div class="form-group">
                 <label>Desa/Kelurahan</label>
                 <input type="text" name="kelurahan" placeholder="Isikan" value="{{ old('kelurahan') }}" required>
+                <div class="input-error" style="color:red; display:none;">Desa/Kelurahan harus diisi.</div>
             </div>
         </div>
 
@@ -50,27 +49,38 @@
             <div class="form-group">
                 <label>Kecamatan</label>
                 <input type="text" name="kecamatan" placeholder="Isikan" value="{{ old('kecamatan') }}" required>
+                <div class="input-error" style="color:red; display:none;">Kecamatan harus diisi.</div>
             </div>
             <div class="form-group">
                 <label>Kabupaten/Kota</label>
                 <input type="text" name="kabupaten" placeholder="Isikan" value="{{ old('kabupaten') }}" required>
+                <div class="input-error" style="color:red; display:none;">Kabupaten harus diisi.</div>
             </div>
             <div class="form-group">
                 <label>Provinsi</label>
                 <input type="text" name="provinsi" placeholder="Isikan" value="{{ old('provinsi') }}" required>
+                <div class="input-error" style="color:red; display:none;">Provinsi harus diisi.</div>
             </div>
         </div>
-
+        <div class="form-row">
         <div class="form-group">
             <label>Tanggal Kartu Dikeluarkan</label>
             <input type="date" name="tanggal_dikeluarkan" value="{{ old('tanggal_dikeluarkan') }}" required>
+            <div class="input-error" style="color:red; display:none;">Tanggal Dikeluarkan harus diisi.</div>
+        </div>
+        <div class="form-group">
+            <label>Kode Pos</label>
+            <input type="text" name="kode_pos" value="{{ old('kode_pos') }}" required inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="Isikan">
+            <div class="input-error" style="color:red; display:none;">Kode Pos harus diisi.</div>
+        </div>
+         <div class="form-group">
+            <label>Alamat</label>
+            <input type="text" name="alamat" value="{{ old('alamat') }}" placeholder="Isikan" required>
+            <div class="input-error" style="color:red; display:none;">Alamat harus diisi.</div>
+        </div>
         </div>
     </div>
-
-    <!-- Section: Data Anggota Keluarga -->
     <div id="members-container"></div>
-
-    <!-- Action Buttons -->
     <div class="form-actions">
         <button type="button" class="btn-add-member" onclick="addMember()">
             + Tambah Anggota Keluarga

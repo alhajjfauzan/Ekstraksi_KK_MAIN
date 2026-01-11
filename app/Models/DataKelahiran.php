@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DataKelahiran extends Model
 {
     protected $table = 'data_kelahirans';
+    protected $primaryKey = 'nik_fk';
     protected $fillable = [
         'nik_fk',
         'tempat_lahir',
@@ -16,7 +17,7 @@ class DataKelahiran extends Model
     ];
 
     public $timestamps = true;
-    public function anggotaKeluarga()
+    public function anggota()
     {
         return $this->belongsTo(AnggotaKeluarga::class, 'nik_fk', 'nik');
     }

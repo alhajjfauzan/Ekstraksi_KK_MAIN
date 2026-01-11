@@ -9,10 +9,7 @@ class CreateDataKelahiransTable extends Migration
     public function up()
     {
         Schema::create('data_kelahirans', function (Blueprint $table) {
-            $table->id();
-
-            $table->string('nik_fk', 16)->unique();
-
+            $table->string('nik_fk', 16)->primary();
             $table->string('tempat_lahir', 255);
             $table->date('tanggal_lahir');
             $table->string('nama_ayah', 255);

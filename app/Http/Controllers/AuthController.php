@@ -16,8 +16,6 @@ class AuthController extends Controller
         ]);
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
-            // Set session flash untuk modal
             session()->flash('success_title', 'Berhasil!');
             session()->flash('success_message', 'Anda telah berhasil melakukan Login');
 
@@ -31,7 +29,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // Validasi dengan rule password yang lebih ketat
+       
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
@@ -39,7 +37,7 @@ class AuthController extends Controller
                 'required',
                 'min:8',
                 'confirmed',
-                'regex:/[A-Z]/', // Minimal 1 huruf besar
+                'regex:/[A-Z]/',
             ],
             'password_confirmation' => 'required|same:password',
         ], [
@@ -55,8 +53,6 @@ class AuthController extends Controller
             'password' => Hash::make($request->password), 
         ]);
         Auth::login($user);
-
-        // Set session flash untuk modal
         session()->flash('success_title', 'Berhasil!');
         session()->flash('success_message', 'Anda telah berhasil melakukan Register');
 

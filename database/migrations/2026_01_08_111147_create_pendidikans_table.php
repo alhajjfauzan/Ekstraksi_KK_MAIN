@@ -9,12 +9,16 @@ class CreatePendidikansTable extends Migration
     public function up()
     {
         Schema::create('pendidikans', function (Blueprint $table) {
-            $table->id();
+            $table->string('nik_fk', 16)->unique();
             $table->string('nama', 255);
             $table->timestamps();
+
+            $table->foreign('nik_fk')
+                ->references('nik')
+                ->on('anggota_keluargas')
+                ->cascadeOnDelete();
         });
     }
-
     public function down()
     {
         Schema::dropIfExists('pendidikans');

@@ -16,6 +16,7 @@ class AnggotaKeluarga extends Model
         'nik',
         'kartu_keluarga_id',
         'nama_lengkap',
+        'tanggal_perkawinan',
         'jenis_kelamin',
         'status_hubungan',
     ];
@@ -39,5 +40,14 @@ public function dataDokumen()
 public function dataStatus()
 {
     return $this->hasOne(DataStatus::class, 'nik_fk', 'nik');
+}
+public function agama()
+{
+    return $this->hasOne(Agama::class, 'nik_fk', 'nik');
+}
+
+public function pendidikan()
+{
+    return $this->hasOne(Pendidikan::class, 'nik_fk', 'nik');
 }
 }

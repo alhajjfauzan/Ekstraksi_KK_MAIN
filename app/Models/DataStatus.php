@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DataStatus extends Model
 {
     protected $table = 'data_statuses';
-
+    protected $primaryKey = 'nik_fk';
     protected $fillable = [
         'nik_fk',
         'pekerjaan',
@@ -18,7 +18,7 @@ class DataStatus extends Model
         'pendidikan_id',
     ];
 
-    public function anggotaKeluarga()
+    public function anggota()
     {
         return $this->belongsTo(
             AnggotaKeluarga::class,

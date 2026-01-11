@@ -9,12 +9,9 @@ class CreateDataDokumensTable extends Migration
     public function up()
     {
         Schema::create('data_dokumens', function (Blueprint $table) {
-            $table->id();
-
-            $table->string('nik_fk', 16);
+            $table->string('nik_fk', 16)->primary();
             $table->string('no_paspor', 25)->nullable();
             $table->string('no_kitap', 25)->nullable();
-
             $table->foreign('nik_fk')
                   ->references('nik')
                   ->on('anggota_keluargas')

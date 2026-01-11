@@ -7,83 +7,95 @@
 </head>
 <body>
     <div class="form-container">
-        <!-- Header -->
         <div class="form-header">
             <a href="/dashboard" class="back-link">◀ Kembali</a>
             <h1 class="form-title">PENGISIAN DATA KELUARGA</h1>
         </div>
-
-        <!-- Form -->
         <form action="<?php echo e(route('tambah.store')); ?>" method="POST" id="formKeluarga">
-            <?php echo csrf_field(); ?>
+               <?php echo csrf_field(); ?>
+        <script>
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+</script>
 
-            <!-- Section: Data Kepala Keluarga -->
-            <div class="form-section">
-                <h2 class="section-title">Data Kepala Keluarga</h2>
-                
-                <div class="form-group">
-                    <label>No Kartu Keluarga</label>
-                    <input type="text" name="no_kk" placeholder="Isikan" value="<?php echo e(old('no_kk')); ?>" required>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>RT</label>
-                        <input type="text" name="rt" placeholder="Isikan" value="<?php echo e(old('rt')); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label>RW</label>
-                        <input type="text" name="rw" placeholder="Isikan" value="<?php echo e(old('rw')); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Desa/Kelurahan</label>
-                        <input type="text" name="kelurahan" placeholder="Isikan" value="<?php echo e(old('kelurahan')); ?>" required>
-                    </div>
-                </div>
+    <div class="form-section">
+        <h2 class="section-title">Data Kepala Keluarga</h2>
+        
+        <div class="form-group">
+            <label>No Kartu Keluarga</label>
+            <input type="text" id="no_kk" name="no_kk" placeholder="Isikan" value="<?php echo e(old('no_kk')); ?>" required>
+            <div id="no_kk_error" style="color: red; display: none;">No KK hanya boleh berisi angka.</div>
+        </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Kecamatan</label>
-                        <input type="text" name="kecamatan" placeholder="Isikan" value="<?php echo e(old('kecamatan')); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Kabupaten/Kota</label>
-                        <input type="text" name="kabupaten" placeholder="Isikan" value="<?php echo e(old('kabupaten')); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Provinsi</label>
-                        <input type="text" name="provinsi" placeholder="Isikan" value="<?php echo e(old('provinsi')); ?>" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Tanggal Kartu Dikeluarkan</label>
-                    <input type="date" name="tanggal_dikeluarkan" value="<?php echo e(old('tanggal_dikeluarkan')); ?>" required>
-                </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>RT</label>
+                <input type="text" name="rt" placeholder="Isikan" value="<?php echo e(old('rt')); ?>" required>
+                <div class="input-error" style="color:red; display:none;">RT harus diisi.</div>
             </div>
-
-            <!-- Section: Data Anggota Keluarga -->
-            <div id="members-container"></div>
-
-            <!-- Action Buttons -->
-            <div class="form-actions">
-                <button type="button" class="btn-add-member" onclick="addMember()">
-                    + Tambah Anggota Keluarga
-                </button>
+            <div class="form-group">
+                <label>RW</label>
+                <input type="text" name="rw" placeholder="Isikan" value="<?php echo e(old('rw')); ?>" required>
+                <div class="input-error" style="color:red; display:none;">RW harus diisi.</div>
             </div>
-
-            <div class="form-actions">
-                <button type="button" class="btn-confirm" onclick="showConfirmationModal(event)">
-                    ✓ Konfirmasi Penambahan Data
-                </button>
-                <a href="/dashboard" class="btn-cancel" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                    Batal
-                </a>
+            <div class="form-group">
+                <label>Desa/Kelurahan</label>
+                <input type="text" name="kelurahan" placeholder="Isikan" value="<?php echo e(old('kelurahan')); ?>" required>
+                <div class="input-error" style="color:red; display:none;">Desa/Kelurahan harus diisi.</div>
             </div>
-        </form>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Kecamatan</label>
+                <input type="text" name="kecamatan" placeholder="Isikan" value="<?php echo e(old('kecamatan')); ?>" required>
+                <div class="input-error" style="color:red; display:none;">Kecamatan harus diisi.</div>
+            </div>
+            <div class="form-group">
+                <label>Kabupaten/Kota</label>
+                <input type="text" name="kabupaten" placeholder="Isikan" value="<?php echo e(old('kabupaten')); ?>" required>
+                <div class="input-error" style="color:red; display:none;">Kabupaten harus diisi.</div>
+            </div>
+            <div class="form-group">
+                <label>Provinsi</label>
+                <input type="text" name="provinsi" placeholder="Isikan" value="<?php echo e(old('provinsi')); ?>" required>
+                <div class="input-error" style="color:red; display:none;">Provinsi harus diisi.</div>
+            </div>
+        </div>
+        <div class="form-row">
+        <div class="form-group">
+            <label>Tanggal Kartu Dikeluarkan</label>
+            <input type="date" name="tanggal_dikeluarkan" value="<?php echo e(old('tanggal_dikeluarkan')); ?>" required>
+            <div class="input-error" style="color:red; display:none;">Tanggal Dikeluarkan harus diisi.</div>
+        </div>
+        <div class="form-group">
+            <label>Kode Pos</label>
+            <input type="text" name="kode_pos" value="<?php echo e(old('kode_pos')); ?>" required inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="Isikan">
+            <div class="input-error" style="color:red; display:none;">Kode Pos harus diisi.</div>
+        </div>
+         <div class="form-group">
+            <label>Alamat</label>
+            <input type="text" name="alamat" value="<?php echo e(old('alamat')); ?>" placeholder="Isikan" required>
+            <div class="input-error" style="color:red; display:none;">Alamat harus diisi.</div>
+        </div>
+        </div>
+    </div>
+    <div id="members-container"></div>
+    <div class="form-actions">
+        <button type="button" class="btn-add-member" onclick="addMember()">
+            + Tambah Anggota Keluarga
+        </button>
     </div>
 
-    <!-- Modal Konfirmasi -->
+    <div class="form-actions">
+        <button type="button" class="btn-confirm" onclick="showConfirmationModal(event)">
+    ✓ Konfirmasi Penambahan Data
+</button>
+        <a href="/dashboard" class="btn-cancel">Batal</a>
+    </div>
+</form>
+
+    </div>
     <div class="modal-confirmation" id="confirmationModal">
         <div class="modal-confirmation-content">
             <h2 class="modal-confirmation-title">Peringatan!</h2>
@@ -99,5 +111,4 @@
 
     <script src="<?php echo e(asset('js/form.js')); ?>"></script>
 </body>
-</html>
-<?php /**PATH C:\laragon\www\Ekstraksi_KK_MAIN\resources\views/keluarga/tambah.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\laragon\www\Ekstraksi_KK_MAIN\resources\views/keluarga/tambah.blade.php ENDPATH**/ ?>

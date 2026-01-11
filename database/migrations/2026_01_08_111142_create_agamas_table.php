@@ -9,7 +9,7 @@ class CreateAgamasTable extends Migration
     public function up()
     {
         Schema::create('agamas', function (Blueprint $table) {
-            $table->id();
+            $table->string('nik_fk', 16)->primary();
             $table->enum('nama', [
                 'ISLAM',
                 'KONGHUCU',
@@ -18,6 +18,10 @@ class CreateAgamasTable extends Migration
                 'HINDU',
                 'BUDDHA'
             ]);
+            $table->foreign('nik_fk')
+                    ->references('nik')
+                    ->on('anggota_keluargas')
+                    ->cascadeOnDelete();
             $table->timestamps();
         });
     }

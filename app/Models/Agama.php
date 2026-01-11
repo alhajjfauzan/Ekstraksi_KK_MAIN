@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agama extends Model
 {
-    protected $table = 'agamas'; 
-    protected $fillable = ['nama']; 
+    protected $table = 'agamas';
+     protected $primaryKey = 'nik_fk'; 
+    protected $fillable = ['nik_fk','nama']; 
     public $timestamps = true;
 
-    public function dataStatus()
+    public function anggota()
     {
-        return $this->hasMany(DataStatus::class, 'agama_id', 'id');
+        return $this->belongsTo(AnggotaKeluarga::class, 'nik_fk', 'nik');
     }
 }

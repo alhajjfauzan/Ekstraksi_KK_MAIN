@@ -9,13 +9,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Jumlah KK
         $jumlahKK = KartuKeluarga::count();
-
-        // Jumlah Warga (SEMUA anggota)
         $jumlahWarga = AnggotaKeluarga::count();
-
-        // Data KK + hitung anggota (opsional, tapi bagus)
         $kartuKeluargas = KartuKeluarga::withCount('anggota')
             ->orderBy('no_kk', 'asc')
             ->paginate(10);
