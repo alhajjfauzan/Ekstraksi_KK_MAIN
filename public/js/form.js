@@ -78,12 +78,12 @@ function addMember(anggota = {}) {
         <div class="form-row">
             <div class="form-group">
                 <label>Pendidikan</label>
-                <input type="text" name="anggota[${memberCount}][pendidikan]" placeholder="Isikan" value="${pendidikan}" required>
+                <input type="text" name="anggota[${memberCount}][pendidikan]" placeholder="Isikan" value="${pendidikan}">
                 <div class="input-error" style="color:red; display:none; font-size:0.9em;"></div>
             </div>
             <div class="form-group">
                 <label>Jenis Pekerjaan</label>
-                <input type="text" name="anggota[${memberCount}][pekerjaan]" placeholder="Isikan" value="${pekerjaan}" required>
+                <input type="text" name="anggota[${memberCount}][pekerjaan]" placeholder="Isikan" value="${pekerjaan}">
                 <div class="input-error" style="color:red; display:none; font-size:0.9em;"></div>
             </div>
             <div class="form-group">
@@ -489,9 +489,9 @@ function validateForm() {
             valid = false;
         }
         if (input.name === 'kode_pos' && input.value && !/^\d{5}$/.test(input.value)) {
-            showError(input, 'Kode Pos harus 5 digit angka.');
-            valid = false;
-        }
+                showError(input, 'Kode Pos harus 5 digit angka.');
+                valid = false;
+            }
         if (input.name?.includes('nama_lengkap')) {
             if (!/^[A-Za-z\s'.-]+$/.test(input.value)) {
                 showError(input, 'Nama hanya boleh huruf dan tanda baca (-, .).');
@@ -553,16 +553,27 @@ function validateDuplicateNikAndKK() {
     return valid;
 }
 
-document.querySelectorAll('.only_number').forEach(input => {
-    input.addEventListener('input', function () {
-        this.value = this.value.replace(/[^0-9]/g, '');
-    });
-});
+const kodePosInput = document.querySelector('input[name="kode_pos"]');
+kodePosInput.addEventListener('input', function () {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0,5); 
 
+    const errorEl = document.getElementById('kode_pos_error');
+    if (this.value.length > 0 && this.value.length !== 5) {
+        errorEl.textContent = 'Kode Pos harus 5 digit angka.';
+        errorEl.style.display = 'block';
+    } else {
+        errorEl.style.display = 'none';
+    }
+});
 document.addEventListener('change', function (e) {
     if (e.target.matches('select[name$="[status_hubungan]"]')) {
         validateKepalaKeluargaRealtime();
     }
+});
+ document.querySelectorAll('.only_number').forEach(input => {
+    input.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    })
 });
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('confirmationModal');

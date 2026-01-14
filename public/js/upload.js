@@ -6,7 +6,6 @@ const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.pdf'];
 
 let uploadedFile = null;
 
-// Get elements
 const fileInput = document.getElementById('fileInput');
 const uploadArea = document.getElementById('uploadArea');
 const errorMessage = document.getElementById('errorMessage');
@@ -14,12 +13,9 @@ const errorText = document.getElementById('errorText');
 const uploadSection = document.getElementById('uploadSection');
 const previewSection = document.getElementById('previewSection');
 
-// Click to upload
 uploadArea.addEventListener('click', () => {
     fileInput.click();
 });
-
-// Drag and drop events
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('drag-over');
@@ -38,19 +34,14 @@ uploadArea.addEventListener('drop', (e) => {
     }
 });
 
-// File input change event
 fileInput.addEventListener('change', (e) => {
     if (e.target.files && e.target.files[0]) {
         processFile(e.target.files[0]);
     }
 });
 
-// Process file
 function processFile(file) {
-    // Reset error message
     hideErrorMessage();
-    
-    // Validate file
     const validation = validateFile(file);
     
     if (!validation.valid) {
@@ -58,26 +49,18 @@ function processFile(file) {
         return;
     }
     
-    // Save file and show preview
     uploadedFile = file;
     showPreview(file);
 }
-
-// Validate file
 function validateFile(file) {
-    // Check file extension
     const fileName = file.name.toLowerCase();
     const hasValidExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
-    
-    // Check file type or extension
     if (!ALLOWED_TYPES.includes(file.type) && !hasValidExtension) {
         return {
             valid: false,
             error: '❌ Format file tidak didukung. Gunakan JPG, PNG, atau PDF.'
         };
     }
-    
-    // Check file size
     if (file.size > MAX_FILE_SIZE) {
         const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
         return {
@@ -88,44 +71,33 @@ function validateFile(file) {
     
     return { valid: true };
 }
-
-// Show error message
 function showErrorMessage(message) {
     errorText.textContent = message;
     errorMessage.classList.add('show');
     errorMessage.style.display = 'block';
 }
-
-// Hide error message
 function hideErrorMessage() {
     errorMessage.classList.remove('show');
     errorMessage.style.display = 'none';
 }
 
-// Show preview
 function showPreview(file) {
     const reader = new FileReader();
     
     reader.onload = (e) => {
-        // Set preview image or PDF icon
         const previewImage = document.getElementById('previewImage');
         if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-            // For PDF, show a PDF icon or placeholder
             previewImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UERGPC90ZXh0Pjwvc3ZnPg==';
             previewImage.alt = 'PDF Preview';
         } else {
             previewImage.src = e.target.result;
         }
-        
-        // Set file info
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileSize').textContent = formatFileSize(file.size);
-        
-        // Toggle sections
+
         uploadSection.style.display = 'none';
         previewSection.style.display = 'block';
-        
-        // Scroll to preview
+        showKkReminder();
         previewSection.scrollIntoView({ behavior: 'smooth' });
     };
     
@@ -136,7 +108,59 @@ function showPreview(file) {
     reader.readAsDataURL(file);
 }
 
-// Format file size
+
+function showKkReminder() {
+    const reminderId = 'kkReminder';
+    let reminder = document.getElementById(reminderId);
+    if (!reminder) {
+        reminder = document.createElement('div');
+        reminder.id = reminderId;
+        reminder.style.cssText = `
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #e6ffed;
+            border-left: 5px solid var(--primary-green);
+            color: var(--primary-green);
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            position: relative;
+        `;
+
+        reminder.innerHTML = `
+            <strong>Periksa ulang Kartu Keluarga (KK)</strong><br>
+            Pastikan foto KK jelas, No KK, nama kepala keluarga, dan semua data anggota terlihat dengan benar.
+            <span id="closeKkReminder" style="
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                cursor: pointer;
+                font-weight: normal;
+                color: var(--primary-green);
+                font-size: 16px;">✖</span>
+        `;
+        previewSection.insertBefore(reminder, previewSection.firstChild);
+        setTimeout(() => {
+            reminder.style.opacity = 1;
+        }, 50);
+        const closeBtn = document.getElementById('closeKkReminder');
+        closeBtn.addEventListener('click', () => {
+            reminder.style.opacity = 0;
+            setTimeout(() => {
+                reminder.remove();
+            }, 500);
+        });
+
+    } else {
+        reminder.style.display = 'block';
+        setTimeout(() => {
+            reminder.style.opacity = 1;
+        }, 50);
+    }
+}
+
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     
@@ -147,7 +171,6 @@ function formatFileSize(bytes) {
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 }
 
-// Change file
 function changeFile() {
     uploadedFile = null;
     fileInput.value = '';
@@ -160,9 +183,7 @@ function changeFile() {
     uploadSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Confirm upload
 function confirmUpload(event) {
-    // Prevent default if event is provided
     if (event) {
         event.preventDefault();
     }
@@ -171,38 +192,25 @@ function confirmUpload(event) {
         showErrorMessage('❌ Tidak ada file yang dipilih.');
         return;
     }
-    
-    // Get button element
     const confirmBtn = event ? event.target : document.querySelector('.btn-success');
     const originalText = confirmBtn ? confirmBtn.textContent : '✓ Konfirmasi Penambahan Data';
-    
-    // Disable button
     if (confirmBtn) {
         confirmBtn.disabled = true;
         confirmBtn.textContent = '⏳ Memproses dengan AI...';
     }
-    
-    // Show loading indicator
     const loadingMessage = document.createElement('div');
     loadingMessage.id = 'loadingMessage';
     loadingMessage.style.cssText = 'text-align: center; padding: 20px; color: var(--primary-green); font-weight: bold; margin-top: 20px;';
     loadingMessage.textContent = '⏳ Sedang memproses file dengan AI, mohon tunggu...';
     previewSection.insertBefore(loadingMessage, previewSection.firstChild);
-    
-    // Create FormData
     const formData = new FormData();
     formData.append('file', uploadedFile);
-    
-    // Get CSRF token
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    
     console.log('Mengirim file ke server...', {
         fileName: uploadedFile.name,
         fileSize: uploadedFile.size,
         fileType: uploadedFile.type
     });
-    
-    // Send file to server
     fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -226,15 +234,11 @@ function confirmUpload(event) {
     .then(data => {
         console.log('Response data:', data);
         if (data.success) {
-            // Update loading message to success
             const loadingMsg = document.getElementById('loadingMessage');
             if (loadingMsg) {
                 loadingMsg.style.color = 'var(--primary-green)';
                 loadingMsg.textContent = '✓ File berhasil diproses! Mengarahkan ke form...';
             }
-            
-            // Redirect to tambah page (AI data will be in session)
-            // Small delay to show success message
             setTimeout(() => {
                 const redirectUrl = data.redirect_url || '/tambah';
                 console.log('Redirecting to:', redirectUrl);
@@ -246,7 +250,6 @@ function confirmUpload(event) {
     })
     .catch(error => {
         console.error('Upload error:', error);
-        // Remove loading message
         const loadingMsg = document.getElementById('loadingMessage');
         if (loadingMsg) loadingMsg.remove();
         
@@ -257,8 +260,6 @@ function confirmUpload(event) {
         }
     });
 }
-
-// Handle file upload (legacy function for compatibility)
 function handleFileUpload(input) {
     if (input.files && input.files[0]) {
         processFile(input.files[0]);
