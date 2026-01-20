@@ -35,8 +35,8 @@ function addMember(anggota = {}) {
             </div>
             <div class="form-group">
                 <label>Nomor Induk Kependudukan</label>
-                <input type="text" maxlength="16" class="nik-input" name="anggota[${memberCount}][nik]" placeholder="Isikan" value="${nik}" required>
-                <div class="input-error nik-error" style="color:red; display:none;">NIK harus 16 digit angka.</div>
+                <input type="text" maxlength="16" class="nik-input" name="anggota[${memberCount}][nik]" placeholder="Isikan" value="${nik}"required>
+                <div class="input-error" style="color:red; display:none;"></div>
             </div>
             <div class="form-group">
                 <label>Jenis Kelamin</label>
@@ -181,7 +181,6 @@ function addMember(anggota = {}) {
     this.value = this.value
         .replace(/\D/g, '')
         .slice(0, 16);
-
     if (!this.value) {
         showError(this, 'NIK harus diisi.');
     } 
@@ -189,10 +188,9 @@ function addMember(anggota = {}) {
         showError(this, 'NIK harus 16 digit angka.');
     } 
     else {
-        hideError(this);
+        hideError(this); 
+        validateDuplicateNikAndKK(); 
     }
-
-    validateDuplicateNikAndKK();
 });
 
 }
@@ -270,26 +268,27 @@ function validateKepalaKeluargaRealtime() {
     const selects = document.querySelectorAll(
         'select[name$="[status_hubungan]"]'
     );
-
     let kepalaSelects = [];
-
+    let valid = true;
     selects.forEach(select => {
-        const errorEl = select
-            .closest('.form-group')
-            .querySelector('.input-error');
-
-        if (errorEl) errorEl.style.display = 'none';
-
+        hideError(select);
+        if (!select.value) {
+            showError(select, 'Status hubungan wajib diisi.');
+            valid = false;
+            return;
+        }
         if (select.value === 'Kepala Keluarga') {
             kepalaSelects.push(select);
         }
     });
+
     if (kepalaSelects.length === 0) {
         selects.forEach(select => {
             showError(select, 'Harus ada 1 Kepala Keluarga.');
         });
         return false;
     }
+
     if (kepalaSelects.length > 1) {
         kepalaSelects.forEach((select, index) => {
             if (index > 0) {
@@ -298,8 +297,10 @@ function validateKepalaKeluargaRealtime() {
         });
         return false;
     }
-    return true;
+
+    return valid;
 }
+
 function fillFormWithAIData(aiData) {
     if (!aiData) return;
 
@@ -470,47 +471,89 @@ function hideError(input) {
     const error = input.parentElement.querySelector('.input-error');
     if (error) error.style.display = 'none';
 }
+
+function validateRequiredFields(container) {
+    let valid = true;
+
+    container.querySelectorAll('input, select, textarea').forEach(input => {
+           console.log(
+            'FIELD:', input.name,
+            'required:', input.hasAttribute('required'),
+            'value:', input.value
+        );
+        if (!input.hasAttribute('required')) return;
+        if (input.disabled || input.readOnly) return;
+
+        hideError(input);
+
+        if (!input.value || !input.value.trim()) {
+            const label = input.closest('.form-group')
+                ?.querySelector('label')
+                ?.textContent
+                ?.trim();
+
+            showError(
+                input,
+                label ? `${label} harus diisi.` : 'Field ini wajib diisi.'
+            );
+            valid = false;
+        }
+    });
+
+    return valid;
+}
+
 function validateForm() {
     let valid = true;
     const form = document.getElementById('formKeluarga');
+
+    // 1️⃣ VALIDASI REQUIRED (GLOBAL)
+    if (!validateRequiredFields(form)) {
+        valid = false;
+    }
+
     const inputs = form.querySelectorAll('input, select');
+
     inputs.forEach(input => {
-        hideError(input);
-        if (input.hasAttribute('required') && !input.value.trim()) {
-            showError(input, `${input.previousElementSibling.textContent} harus diisi.`);
-            valid = false;
-        }
+
+        // 2️⃣ NO KK
         if (input.name === 'no_kk' && input.value && input.value.length !== 16) {
             showError(input, 'No KK harus 16 digit angka.');
             valid = false;
         }
-       if (input.classList.contains('nik-input')) {
-            if (!input.value.trim()) {
-                showError(input, 'NIK harus diisi.');
-                valid = false;
-            } 
-            else if (input.value.length !== 16) {
+
+        // 3️⃣ NIK
+        if (input.classList.contains('nik-input')) {
+            if (input.value && input.value.length !== 16) {
                 showError(input, 'NIK harus 16 digit angka.');
                 valid = false;
             }
         }
 
+        // 4️⃣ KODE POS
         if (input.name === 'kode_pos' && input.value && !/^\d{5}$/.test(input.value)) {
-                showError(input, 'Kode Pos harus 5 digit angka.');
-                valid = false;
-            }
+            showError(input, 'Kode Pos harus 5 digit angka.');
+            valid = false;
+        }
+
+        // 5️⃣ NAMA LENGKAP (FORMAT SAJA)
         if (input.name?.includes('nama_lengkap')) {
-            if (!/^[A-Za-z\s'.-]+$/.test(input.value)) {
+            const value = input.value.trim();
+
+            if (value && !/^[A-Za-z\s'.-]+$/.test(value)) {
                 showError(input, 'Nama hanya boleh huruf dan tanda baca (-, .).');
                 valid = false;
             }
         }
-        
     });
+
+    // 6️⃣ VALIDASI LOGIKA KHUSUS
     if (!validateKepalaKeluargaRealtime()) valid = false;
     if (!validateDuplicateNikAndKK()) valid = false;
+
     return valid;
 }
+
 // function confirmSubmit() {
 //     document.getElementById('formKeluarga').submit();
 // }
@@ -532,20 +575,28 @@ async function confirmSubmit() {
 function validateDuplicateNikAndKK() {
     let valid = true;
 
-    const noKKInput = document.getElementById('no_kk_error');
-    const noKK = noKKInput?.value || '';
+    const noKKInput = document.getElementById('no_kk_error'); 
+    const noKKValue = document.getElementById('no_kk')?.value || ''; 
 
     const nikInputs = document.querySelectorAll('.nik-input');
     const nikMap = {};
-    nikInputs.forEach(input => hideError(input));
-    if (noKKInput) hideError(noKKInput);
+
+    nikInputs.forEach(input => {
+        if (input.value) { 
+            hideError(input); 
+        }
+    });
+    if (noKKInput) noKKInput.style.display = 'none';
 
     nikInputs.forEach(input => {
         const nik = input.value;
-        if (!nik) return;
-        if (noKK && nik === noKK) {
+        if (!nik) return; 
+        if (noKKValue && nik === noKKValue) {
             showError(input, 'NIK tidak boleh sama dengan No KK.');
-            showError(noKKInput, 'No KK tidak boleh sama dengan NIK anggota.');
+            if (noKKInput) {
+                noKKInput.textContent = 'No KK tidak boleh sama dengan NIK anggota.';
+                noKKInput.style.display = 'block';
+            }
             valid = false;
         }
         if (nikMap[nik]) {
@@ -573,6 +624,7 @@ kodePosInput.addEventListener('input', function () {
     }
 });
 document.addEventListener('change', function (e) {
+    let allFilled = true;
     if (e.target.matches('select[name$="[status_hubungan]"]')) {
         validateKepalaKeluargaRealtime();
     }
