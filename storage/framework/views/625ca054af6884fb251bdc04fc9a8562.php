@@ -25,7 +25,7 @@
         <div class="form-group">
             <label>No Kartu Keluarga</label>
             <input type="text" id="no_kk" maxlength="16" name="no_kk" placeholder="Isikan" value="<?php echo e(old('no_kk')); ?>" required>
-            <div id="no_kk_error" style="color: red; display: none;">No KK hanya boleh berisi angka.</div>
+            <div id="no_kk_error input-error" style="color: red; display: none;">No KK hanya boleh berisi angka.</div>
         </div>
 
         <div class="form-row">

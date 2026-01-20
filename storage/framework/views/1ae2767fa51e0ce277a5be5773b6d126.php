@@ -8,31 +8,25 @@
     <link rel="stylesheet" href="<?php echo e(asset('css/form.css')); ?>">
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="dashboard-navbar">
         <div class="navbar-menu">
             <a href="<?php echo e(route('landing')); ?>">Home</a>
             <a href="<?php echo e(route('tambah')); ?>">Tambah Data (Manual)</a>
             <a href="/keluarga/upload">Upload Data (Otomatis)</a>
-            <a href="#">Download Data</a>
+            <!-- <a href="#">Download Data</a> -->
         </div>
         <div class="navbar-profile" onclick="toggleProfileMenu()">
             <div class="profile-icon">👤</div>
             <span>Profil</span>
-            
-            <!-- Profile Dropdown Menu -->
             <div class="profile-dropdown" id="profileDropdown">
                 <a href="#" class="dropdown-item" onclick="logout(event); return false;">🚪 Logout</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Container -->
     <div class="dashboard-container">
-        <!-- Title -->
         <h1 class="dashboard-title">EKSTRAKSI <span class="text-green">KARTU KELUARGA</span></h1>
 
-        <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Jumlah KK</h3>
@@ -44,14 +38,11 @@
             </div>
         </div>
 
-        <!-- Search -->
         <div class="search-container">
             <div class="search-bar">
                 <input type="text" class="search-input" placeholder="Cari Data keluarga..." id="search-input">
             </div>
         </div>
-
-        <!-- Table -->
         <div class="table-container">
             <div class="table-wrapper">
                 <table>

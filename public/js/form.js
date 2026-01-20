@@ -177,14 +177,18 @@ function addMember(anggota = {}) {
    const newNikInput = newMemberCard.querySelector('.nik-input');
    const nikError = newMemberCard.querySelector('.nik-error');
 
-    newNikInput.addEventListener('input', function () {
+   newNikInput.addEventListener('input', function () {
     this.value = this.value
         .replace(/\D/g, '')
         .slice(0, 16);
 
-    if (this.value.length !== 16) {
+    if (!this.value) {
+        showError(this, 'NIK harus diisi.');
+    } 
+    else if (this.value.length !== 16) {
         showError(this, 'NIK harus 16 digit angka.');
-    } else {
+    } 
+    else {
         hideError(this);
     }
 
@@ -337,16 +341,12 @@ function fillFormWithAIData(aiData) {
                 }
             }
         }
-        
-        // Fill kode pos
         if (aiData.kode_pos || aiData.kodePos || aiData['Kode Pos']) {
             const kodePosInput = document.querySelector('input[name="kode_pos"]');
             if (kodePosInput) {
                 kodePosInput.value = aiData.kode_pos || aiData.kodePos || aiData['Kode Pos'] || '';
             }
         }
-        
-        // Fill alamat
         if (aiData.alamat || aiData['Alamat']) {
             const alamatInput = document.querySelector('input[name="alamat"]');
             if (alamatInput) {
@@ -484,10 +484,17 @@ function validateForm() {
             showError(input, 'No KK harus 16 digit angka.');
             valid = false;
         }
-        if (input.classList.contains('nik-input') && input.value.length !== 16) {
-            showError(input, 'NIK harus 16 digit angka.');
-            valid = false;
+       if (input.classList.contains('nik-input')) {
+            if (!input.value.trim()) {
+                showError(input, 'NIK harus diisi.');
+                valid = false;
+            } 
+            else if (input.value.length !== 16) {
+                showError(input, 'NIK harus 16 digit angka.');
+                valid = false;
+            }
         }
+
         if (input.name === 'kode_pos' && input.value && !/^\d{5}$/.test(input.value)) {
                 showError(input, 'Kode Pos harus 5 digit angka.');
                 valid = false;
