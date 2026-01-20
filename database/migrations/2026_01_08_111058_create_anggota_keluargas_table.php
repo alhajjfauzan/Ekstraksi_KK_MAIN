@@ -26,7 +26,6 @@ class CreateAnggotaKeluargasTable extends Migration
                 'PEMBANTU',
                 'LAINNYA'
             ]);
-
              $table->string('kartu_keluarga_id', 16); 
              $table->foreign('kartu_keluarga_id')->references('no_kk')->on('kartu_keluargas')->onDelete('cascade');
 

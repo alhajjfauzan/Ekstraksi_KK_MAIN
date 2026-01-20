@@ -177,21 +177,18 @@ function addMember(anggota = {}) {
    const newNikInput = newMemberCard.querySelector('.nik-input');
    const nikError = newMemberCard.querySelector('.nik-error');
 
-   newNikInput.addEventListener('input', function () {
-    this.value = this.value
-        .replace(/\D/g, '')
-        .slice(0, 16);
-    if (!this.value) {
-        showError(this, 'NIK harus diisi.');
-    } 
-    else if (this.value.length !== 16) {
-        showError(this, 'NIK harus 16 digit angka.');
-    } 
-    else {
-        hideError(this); 
-        validateDuplicateNikAndKK(); 
-    }
-});
+    newNikInput.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 16);
+
+        if (!this.value) {
+            hideError(this);
+        } else if (this.value.length !== 16) {
+            showError(this, 'NIK harus 16 digit angka.');
+        } else {
+            hideError(this);
+            validateDuplicateNikAndKK();
+        }
+    });
 
 }
 
@@ -224,23 +221,38 @@ function removeMember(memberId) {
 
 async function showConfirmationModal(event) {
     event.preventDefault();
-
-    if (!validateForm()) return;
-
+    
+    if (!validateForm()) {
+        // Scroll to first error
+        const firstError = document.querySelector('.input-error[style*="block"], #no_kk_error[style*="block"]');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    
+    // Check No KK first
     const noKKValid = await checkNoKKFromDatabase();
-    if (!noKKValid) return;
+    if (!noKKValid) {
+        document.getElementById('no_kk_error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    
+    // Check all NIKs
     const nikInputs = document.querySelectorAll('.nik-input');
     for (const input of nikInputs) {
-        const nikValid = await checkNikFromDatabase(input);
-        if (!nikValid) {
-            input.focus();
-            return;
+        if (input.value && input.value.length === 16) {
+            const nikValid = await checkNikFromDatabase(input);
+            if (!nikValid) {
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
         }
     }
-
+    
+    // If all checks pass, show modal
     document.getElementById('confirmationModal').classList.add('active');
 }
-
 
 function closeConfirmationModal() {
     const modal = document.getElementById('confirmationModal');
@@ -471,7 +483,15 @@ function hideError(input) {
     const error = input.parentElement.querySelector('.input-error');
     if (error) error.style.display = 'none';
 }
+function clearErrorIfValid(input) {
+    if (!input.hasAttribute('required')) return;
 
+    if (input.disabled || input.readOnly) return;
+
+    if (input.value && input.value.trim() !== '') {
+        hideError(input);
+    }
+}
 function validateRequiredFields(container) {
     let valid = true;
 
@@ -507,7 +527,6 @@ function validateForm() {
     let valid = true;
     const form = document.getElementById('formKeluarga');
 
-    // 1️⃣ VALIDASI REQUIRED (GLOBAL)
     if (!validateRequiredFields(form)) {
         valid = false;
     }
@@ -516,27 +535,22 @@ function validateForm() {
 
     inputs.forEach(input => {
 
-        // 2️⃣ NO KK
         if (input.name === 'no_kk' && input.value && input.value.length !== 16) {
             showError(input, 'No KK harus 16 digit angka.');
             valid = false;
         }
 
-        // 3️⃣ NIK
         if (input.classList.contains('nik-input')) {
             if (input.value && input.value.length !== 16) {
                 showError(input, 'NIK harus 16 digit angka.');
                 valid = false;
             }
         }
-
-        // 4️⃣ KODE POS
         if (input.name === 'kode_pos' && input.value && !/^\d{5}$/.test(input.value)) {
             showError(input, 'Kode Pos harus 5 digit angka.');
             valid = false;
         }
 
-        // 5️⃣ NAMA LENGKAP (FORMAT SAJA)
         if (input.name?.includes('nama_lengkap')) {
             const value = input.value.trim();
 
@@ -546,8 +560,6 @@ function validateForm() {
             }
         }
     });
-
-    // 6️⃣ VALIDASI LOGIKA KHUSUS
     if (!validateKepalaKeluargaRealtime()) valid = false;
     if (!validateDuplicateNikAndKK()) valid = false;
 
@@ -623,12 +635,33 @@ kodePosInput.addEventListener('input', function () {
         errorEl.style.display = 'none';
     }
 });
-document.addEventListener('change', function (e) {
-    let allFilled = true;
-    if (e.target.matches('select[name$="[status_hubungan]"]')) {
-        validateKepalaKeluargaRealtime();
+
+
+document.addEventListener('input', function (e) {
+    const target = e.target;
+
+    if (
+        target.matches('input[required]') ||
+        target.classList.contains('nik-input')
+    ) {
+        clearErrorIfValid(target);
     }
 });
+
+document.addEventListener('change', function (e) {
+    const target = e.target;
+      if (e.target.matches('select[name$="[status_hubungan]"]')) {
+        hideError(e.target);
+        validateKepalaKeluargaRealtime();
+    }
+    if (target.matches('select[required]')) {
+        if (target.value) {
+            hideError(target);
+        }
+    }
+});
+
+
  document.querySelectorAll('.only_number').forEach(input => {
     input.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -651,6 +684,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         validateDuplicateNikAndKK();
     });
+        if (noKK) {
+        let noKKTimeout;
+        noKK.addEventListener('input', function() {
+            clearTimeout(noKKTimeout);
+            noKKTimeout = setTimeout(() => {
+                if (this.value.length === 16) {
+                    checkNoKKFromDatabase();
+                }
+            }, 1000);
+        });
+    }
+
     if (modal) {
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
@@ -668,13 +713,36 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         addMember();
     }
+     document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('nik-input')) {
+            clearTimeout(e.target.dataset.nikTimeout);
+            e.target.dataset.nikTimeout = setTimeout(() => {
+                if (e.target.value && e.target.value.length === 16) {
+                    checkNikFromDatabase(e.target);
+                }
+            }, 1000);
+        }
+    });
 })
 async function checkNoKKFromDatabase() {
     const noKKInput = document.getElementById('no_kk');
     const errorEl = document.getElementById('no_kk_error');
-
-    if (!noKKInput || noKKInput.value.length !== 16) return true;
-
+    if (!errorEl) {
+        const newErrorEl = document.createElement('div');
+        newErrorEl.id = 'no_kk_error';
+        newErrorEl.style.color = 'red';
+        newErrorEl.style.fontSize = '0.9em';
+        newErrorEl.style.display = 'none';
+        noKKInput.parentElement.appendChild(newErrorEl);
+    }
+    
+    const currentErrorEl = errorEl || document.getElementById('no_kk_error');
+    
+    if (!noKKInput || noKKInput.value.length !== 16) {
+        currentErrorEl.style.display = 'none';
+        return true;
+    }
+    
     try {
         const res = await fetch('/cek-duplikat', {
             method: 'POST',
@@ -684,32 +752,46 @@ async function checkNoKKFromDatabase() {
                     .querySelector('meta[name="csrf-token"]')
                     .getAttribute('content')
             },
-            body: JSON.stringify({ no_kk: noKKInput.value })
+            body: JSON.stringify({ 
+                no_kk: noKKInput.value,
+                check_type: 'no_kk' 
+            })
         });
-
+        
         const data = await res.json();
-
-        if (data.no_kk_exists) {
-            errorEl.textContent = 'No KK sudah terdaftar di database.';
-            errorEl.style.display = 'block';
+        
+        if (data.exists || data.no_kk_exists) {
+            currentErrorEl.textContent = 'No KK sudah terdaftar di database.';
+            currentErrorEl.style.display = 'block';
             return false;
         }
-
-        errorEl.style.display = 'none';
+        
+        currentErrorEl.style.display = 'none';
         return true;
-
+        
     } catch (e) {
-        console.error(e);
-        errorEl.textContent = 'Gagal mengecek No KK.';
-        errorEl.style.display = 'block';
+        console.error('Error checking No KK:', e);
+        currentErrorEl.textContent = 'Gagal mengecek No KK. Coba lagi.';
+        currentErrorEl.style.display = 'block';
         return false;
     }
 }
 async function checkNikFromDatabase(nikInput) {
-    const errorEl = nikInput.nextElementSibling;
-
-    if (!nikInput.value || nikInput.value.length !== 16) return true;
-
+    let errorEl = nikInput.parentElement.querySelector('.input-error');
+    if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.className = 'input-error';
+        errorEl.style.color = 'red';
+        errorEl.style.fontSize = '0.9em';
+        errorEl.style.display = 'none';
+        nikInput.parentElement.appendChild(errorEl);
+    }
+    
+    if (!nikInput.value || nikInput.value.length !== 16) {
+        errorEl.style.display = 'none';
+        return true;
+    }
+    
     try {
         const res = await fetch('/cek-duplikat', {
             method: 'POST',
@@ -719,23 +801,26 @@ async function checkNikFromDatabase(nikInput) {
                     .querySelector('meta[name="csrf-token"]')
                     .getAttribute('content')
             },
-            body: JSON.stringify({ nik: nikInput.value })
+            body: JSON.stringify({ 
+                nik: nikInput.value,
+                check_type: 'nik' 
+            })
         });
-
+        
         const data = await res.json();
-
-        if (data.nik_exists) {
+        
+        if (data.exists || data.nik_exists) {
             errorEl.textContent = 'NIK sudah terdaftar di database.';
             errorEl.style.display = 'block';
             return false;
         }
-
+        
         errorEl.style.display = 'none';
         return true;
-
+        
     } catch (err) {
-        console.error(err);
-        errorEl.textContent = 'Gagal mengecek NIK.';
+        console.error('Error checking NIK:', err);
+        errorEl.textContent = 'Gagal mengecek NIK. Coba lagi.';
         errorEl.style.display = 'block';
         return false;
     }
